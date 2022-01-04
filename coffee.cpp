@@ -1,7 +1,6 @@
 //Libraries
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <LiquidCrystal.h>
 
 //Pins Declaration
 #define water 10
@@ -14,10 +13,6 @@ int motor[]={6,7,8,9};
 //Variable Declaration
 String flavour[]={"Latte","Cappucino","Espresso","Mocha"};
 int price[]={5,5,8,8};
-int sen_pin=A0;
-int t_c;
-float t_f;
-float v_t;
 
 //Object Declaration
 LiquidCrystal_I2C lcd(0x20,20,4);
@@ -29,8 +24,6 @@ void setup() {
   for(int i=0;i<4;i++){
     pinMode(button[i],INPUT_PULLUP);
     pinMode(motor[i],OUTPUT);
-    pinMode(sen_pin, INPUT);
-    pinMode(0,OUTPUT);
   }
   pinMode(water,OUTPUT);
   pinMode(sugar,OUTPUT);
@@ -40,7 +33,7 @@ void setup() {
   //Print a message to the LCD
   lcd.backlight();
   lcd.setCursor(0,0);
-  lcd.print("The Engineering");
+  lcd.print("DO");
   lcd.setCursor(0,1);
   lcd.print("Projects");
   lcd.setCursor(0,2);
@@ -53,13 +46,6 @@ void setup() {
 
 //Loop Function
 void loop() {
-  v_t=analogRead(sen_pin);
-  v_t=(v_t*500)/1023;
-  t_c=v_t;
-  t_f=(v_t*1.8)+32;
-  Serial.println(" Deg_c=");
-  Serial.println(t_c);
-  delay(500);
   // put your main code here, to run repeatedly:
   for(int i=0;i<4;i++){
     lcd.setCursor(0,i);
@@ -72,14 +58,6 @@ void loop() {
   }
   for(int i=0;i<4;i++){
     if(digitalRead(button[i])==LOW){
-      if(t_c>=80){
-        digitalWrite(0,LOW);
-        }
-      if(t_c<80 && t_c>=0){
-        digitalWrite(0,HIGH);
-        }
-        delay(1000);
-        digitalWrite(0,LOW);
       lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("Wait");
@@ -94,10 +72,9 @@ void loop() {
       digitalWrite(sugar, HIGH);
       delay(2000);
       digitalWrite(sugar, LOW);
-      digitalWrite(coffee, HIGH);
+      digitalWrite(coffee, LOW);
       digitalWrite(motor[i], HIGH);
       delay(2000);
-      digitalWrite(coffee, LOW);
       digitalWrite(motor[i], LOW);
       lcd.clear();
       delay(1000);
